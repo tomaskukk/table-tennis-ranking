@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
-import { Match, matches } from '.';
+import { Match } from '.';
+import matches from '../../../src/data/matches';
 import { findById } from '../../../src/utils';
 
 type Data = {

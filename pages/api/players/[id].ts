@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
-import { Player, players } from '.';
+import { Player } from '.';
+import players from '../../../src/data/players';
 import { findById } from '../../../src/utils';
 
 type Data = {

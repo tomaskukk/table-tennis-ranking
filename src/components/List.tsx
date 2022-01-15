@@ -21,7 +21,7 @@ const List = <T extends { id: string }>({
     <h1>{title}</h1>
     <div sx={{ variant: 'containers.listItem', border: 'none', m: '0' }}>
       {listHeadings.map((lh) => (
-        <div>{lh}</div>
+        <h3 key={lh}>{lh}</h3>
       ))}
     </div>
     {items.map(itemRenderer)}
