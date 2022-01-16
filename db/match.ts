@@ -16,12 +16,20 @@ export const createMatch = async (db: Db, match: { winnerId: string; loserId: st
 
 export const createManyMatches = async (db: Db, data: any[]) => {
   const col = db.collection('matches');
+  const createdAt = newDateString();
+
+  const dataWithDates = R.map(R.mergeRight({ createdAt }), data);
+
   return col
-    .insertMany(data)
-    .then((res) => res.insertedIds)
+    .insertMany(dataWithDates)
+    .then(res => res.insertedIds)
     .then(R.values)
-    .then((ids) => col.find({ _id: { $in: ids } }))
-    .then((res) => res.toArray());
+    .then(ids => col.find({ _id: { $in: ids } }))
+    .then(res => res.toArray());
 };
 
-export const getMatches = async (db: Db) => db.collection('matches').find({}).toArray();
+export const getMatches = async (db: Db) =>
+  db
+    .collection('matches')
+    .find({})
+    .toArray();

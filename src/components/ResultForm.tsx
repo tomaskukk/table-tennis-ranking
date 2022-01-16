@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import { FC, RefObject, useRef, useState } from 'react';
+import { jsx, Label } from 'theme-ui';
+import { FC, RefObject, useRef, useState, useMemo } from 'react';
 import { Player } from '../../pages/api/players';
 import Button from './Button';
 import { postData, refreshServerSideProps } from '../utils';
@@ -46,6 +46,7 @@ const constructAlertMessage = (players: Player[], p1Score: number, p2Score: numb
 
 export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
   const [matchPlayers, setMatchPlayers] = useState<Player[]>([]);
+  const [searchFilter, setSearchFilter] = useState('');
   const router = useRouter();
   const scoreRefOne = useRef<HTMLInputElement>(null);
   const scoreRefTwo = useRef<HTMLInputElement>(null);
@@ -68,6 +69,11 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
 
     setMatchPlayers([]);
   };
+
+  const playersFiltered = useMemo(
+    () => players.filter(({ name }) => name.toLowerCase().includes(searchFilter.toLowerCase())),
+    [players, searchFilter],
+  );
 
   return (
     <div {...restProps}>
@@ -109,20 +115,36 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
           </Button>
         </div>
       ) : (
-        <div sx={{ display: 'flex', flexWrap: 'wrap' }}>
-          {players.map((p) => (
-            <div
-              key={p._id}
-              sx={{
-                variant: 'playerListItem',
-              }}
-              onClick={() => {
-                setMatchPlayers((prev) => [...prev, p]);
-              }}
-            >
-              {p.name}
-            </div>
-          ))}
+        <div
+          sx={{
+            '> *': {
+              mb: '1rem',
+            },
+          }}
+        >
+          <Label>Filter players</Label>
+          <input type="text" value={searchFilter} onChange={e => setSearchFilter(e.target.value)} />
+          <div sx={{ display: 'flex', flexWrap: 'wrap' }}>
+            {playersFiltered.slice(0, 6).map(p => (
+              <div
+                key={p._id}
+                sx={{
+                  variant: 'playerListItem',
+                }}
+                onClick={() => {
+                  setMatchPlayers(prev => [...prev, p]);
+                  setSearchFilter('');
+                }}
+              >
+                {p.name}
+              </div>
+            ))}
+            {playersFiltered.length - 6 > 0 && (
+              <div sx={{ alignSelf: 'flex-end', mb: '1rem', flexBasis: '100%' }}>
+                and {playersFiltered.length - 6} more..
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
