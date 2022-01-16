@@ -1,13 +1,11 @@
-import { ObjectId } from 'mongodb';
 import type { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import R from 'ramda';
-import { createManyMatches, createMatch, getMatches } from '../../../db/match';
+import { createManyMatches, getMatches } from '../../../db/match';
 import { findById, updateUser } from '../../../db/user';
 import middleware from '../../../middleware/all';
 import ratingSystem from '../../../src/ratingSystem';
 import { CustomNextRequest } from '../../../src/types/next';
-import { Player } from '../players';
 
 export type Match = {
   // id: string;

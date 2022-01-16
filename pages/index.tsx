@@ -50,7 +50,7 @@ const Home: NextPage<{ players: Player[] }> = ({ players }) => {
         </PageRowItem>
         <PageRowItem title="Player rankings">
           <ol sx={{ pl: '1rem' }}>
-            {sortByElo(players).map((p, i) => (
+            {sortByElo(players as any).map((p, i) => (
               <li key={p._id}>
                 {medalEmojis[i]} {p.name} ({p.elo} elo)
               </li>

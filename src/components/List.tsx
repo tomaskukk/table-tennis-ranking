@@ -10,7 +10,7 @@ interface ListProps<T> extends HTMLProps<HTMLDivElement> {
   itemRenderer: (item: T, i: number) => ReactNode;
 }
 
-const List = <T extends { id: string }>({
+const List = <T extends {}>({
   items,
   title,
   listHeadings,
