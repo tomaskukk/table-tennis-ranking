@@ -1,18 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import { Player } from '.';
-import players from '../../../src/data/players';
-import { findById } from '../../../src/utils';
+import { findById } from '../../../db/user';
+import middleware from '../../../middleware/all';
+import { CustomNextRequest } from '../../../src/types/next';
 
 type Data = {
   player: Player;
 };
 
-export default nc<NextApiRequest, NextApiResponse<Data>>().get((req, res) => {
-  const id = req.query['id'] as string;
-  const player = findById<Player>(id)(players);
-  if (!player) {
-    return res.status(404).end();
-  }
-  res.status(200).json({ player });
-});
+export default nc<CustomNextRequest, NextApiResponse<Data>>()
+  .use(middleware)
+  .get((req, res) => {
+    const id = req.query['id'] as string;
+    const player = findById(req.db, id);
+    if (!player) {
+      return res.status(404).end();
+    }
+    res.status(200).json({ player });
+  });

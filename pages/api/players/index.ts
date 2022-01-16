@@ -1,46 +1,40 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiResponse } from 'next';
 import nc from 'next-connect';
-import players from '../../../src/data/players';
-import { findById } from '../../../src/utils';
+import { createUser, getUsers } from '../../../db/user';
+import middleware from '../../../middleware/all';
+import { CustomNextRequest } from '../../../src/types/next';
 
 export interface Player {
-  id: string;
-  name: string;
-  elo: number;
-  provisional: boolean;
+  // id: string;
+  // name: string;
+  // elo: number;
+  // provisional: boolean;
+  [key: string]: any;
 }
 
 type Data = {
   data: Player[] | Player;
 };
 
-const nextId = () => String(Number(players[players.length - 1].id) + 1);
+export default nc<CustomNextRequest, NextApiResponse<Data>>()
+  .use(middleware)
+  .get(async (req, res) => {
+    const players = await getUsers(req.db);
 
-export default nc<NextApiRequest, NextApiResponse<Data>>()
-  .get((req, res) => {
     res.status(200).json({ data: players });
   })
-  .post((req, res) => {
+  .post(async (req, res) => {
     const name = req.body?.name;
 
     if (!name) {
       return res.status(400).end();
     }
 
-    const id = nextId();
+    const player = await createUser(req.db, { name });
 
-    players.push({
-      id,
-      name,
-      elo: 1000,
-      provisional: true,
-    });
-
-    const newPlayer = findById<Player>(id)(players);
-
-    if (!newPlayer) {
+    if (!player) {
       throw new Error('Something went wrong when creating a new player');
     }
 
-    res.status(200).json({ data: newPlayer });
+    res.status(200).json({ data: player });
   });

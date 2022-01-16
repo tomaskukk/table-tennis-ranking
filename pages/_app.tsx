@@ -4,9 +4,9 @@ import { jsx } from 'theme-ui';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'theme-ui';
 
-import '../styles/globals.css';
 import theme from '../theme';
 import Nav from '../src/components/Nav';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

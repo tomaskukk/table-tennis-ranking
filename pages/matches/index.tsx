@@ -16,7 +16,7 @@ export const Page: NextPage<PageProps> = ({ matches }) =>
     title: 'Matches',
     listHeadings: ['WinnerId', 'LoserId', 'Played at'],
     itemRenderer: (match) => (
-      <div key={match.id} sx={{ variant: 'containers.listItem' }}>
+      <div key={match._id} sx={{ variant: 'containers.listItem' }}>
         <div>{match.winnerId}</div>
         <div>{match.loserId}</div>
         <div>{new Date(match.createdAt).toLocaleDateString()}</div>

@@ -1,92 +1,81 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { ObjectId } from 'mongodb';
+import type { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import R from 'ramda';
-import matches from '../../../src/data/matches';
-import players from '../../../src/data/players';
+import { createManyMatches, createMatch, getMatches } from '../../../db/match';
+import { findById, updateUser } from '../../../db/user';
+import middleware from '../../../middleware/all';
 import ratingSystem from '../../../src/ratingSystem';
-import { findById } from '../../../src/utils';
+import { CustomNextRequest } from '../../../src/types/next';
 import { Player } from '../players';
 
 export type Match = {
-  id: string;
-  winnerId: string;
-  loserId: string;
-  createdAt: string;
+  // id: string;
+  // winnerId: string;
+  // loserId: string;
+  // createdAt: string;
+  [key: string]: any;
 };
+
+interface InputMatchData {
+  p1Id: string;
+  p2Id: string;
+  score: number;
+}
 
 type Data = {
   data: Match[] | Match;
 };
 
-const nextId = () => String(Number(matches[matches.length - 1].id) + 1);
-
-const getNewMatch = (props: Match) => {
-  const id = nextId();
-
-  const { winnerId, loserId } = props;
-
-  matches.push({
-    id,
-    winnerId,
-    loserId,
-    createdAt: new Date().toISOString(),
-  });
-
-  const newMatch = findById<Match>(id)(matches);
-
-  if (!newMatch) {
-    throw new Error('Something went wrong when creating a new match');
-  }
-
-  return newMatch;
-};
-
-const updatePlayer = (id: string, props: Partial<Player>) => {
-  const player = findById<Player>(id)(players);
-
-  if (!player) {
-    throw new Error('Something went terribly wrong :(');
-  }
-
-  const indexOfPlayer = players.indexOf(player);
-
-  players[indexOfPlayer] = {
-    ...player,
-    ...props,
-  };
-};
-
-const updatePlayerRatings = ({ loserId, winnerId }: Match, res: NextApiResponse<Data>) => {
-  const [loser, winner] = [findById<Player>(loserId)(players), findById<Player>(winnerId)(players)];
-
-  if (!loser || !winner) {
+const updatePlayerRatings = async (req: CustomNextRequest, res: NextApiResponse<Data>, matches: InputMatchData[]) => {
+  const [{ p1Id, p2Id }] = matches;
+  const [p1, p2] = await Promise.all([findById(req.db, p1Id), findById(req.db, p2Id)]);
+  if (!p1 || !p2) {
     return res.status(400).end();
   }
 
-  const { nextPlayerARating, nextPlayerBRating } = ratingSystem.getNextRatings(winner.elo, loser.elo, 1);
+  const { p1Elo, p2Elo } = R.reduce(
+    (acc, curr) => {
+      const { p1Elo, p2Elo } = acc;
+      const { nextPlayerARating, nextPlayerBRating } = ratingSystem.getNextRatings(p1Elo, p2Elo, curr.score);
 
-  [
-    { newRating: nextPlayerARating, id: winner.id },
-    { newRating: nextPlayerBRating, id: loser.id },
-  ].forEach(({ newRating, id }) => {
-    updatePlayer(id, { elo: newRating });
-  });
+      return { p1Elo: nextPlayerARating, p2Elo: nextPlayerBRating };
+    },
+    { p1Elo: p1.elo, p2Elo: p2.elo },
+    matches,
+  );
+
+  await Promise.all(
+    [
+      { newRating: p1Elo, _id: p1Id },
+      { newRating: p2Elo, _id: p2Id },
+    ].map(({ newRating, _id }) => {
+      updateUser(req.db, { _id, elo: newRating });
+    }),
+  );
 };
 
-export default nc<NextApiRequest, NextApiResponse<Data>>()
-  .get((req, res) => {
+export default nc<CustomNextRequest, NextApiResponse<Data>>()
+  .use(middleware)
+  .get(async (req, res) => {
+    const matches = await getMatches(req.db);
     res.status(200).json({ data: matches });
   })
-  .post((req, res) => {
-    const props = R.pick<Match, any>(['winnerId', 'loserId'], req.body);
+  .post(async (req, res) => {
+    const matches: InputMatchData[] | undefined = req.body.data;
 
-    if (R.length(R.values(props)) !== 2) {
+    if (!matches) {
       return res.status(400).end();
     }
 
-    const newMatch = getNewMatch(props);
+    const matchesFormatted = matches.map(({ score, p1Id, p2Id }) => ({
+      winnerId: score === 1 ? p1Id : p2Id,
+      loserId: score === 1 ? p2Id : p1Id,
+    }));
 
-    updatePlayerRatings(props, res);
+    const newMatches = await createManyMatches(req.db, matchesFormatted);
 
-    res.status(200).json({ data: newMatch });
+    await updatePlayerRatings(req, res, matches);
+
+    res.status(200).json({ data: newMatches });
   });

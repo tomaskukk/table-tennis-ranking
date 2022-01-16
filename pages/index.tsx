@@ -10,6 +10,8 @@ import { ResultForm } from '../src/components/ResultForm';
 import { Player } from './api/players';
 import { NextRouter, useRouter } from 'next/router';
 
+const medalEmojis = ['🥇', '🥈', '🥉'];
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const addPlayer = (router: NextRouter) => (name: string) => {
@@ -48,9 +50,9 @@ const Home: NextPage<{ players: Player[] }> = ({ players }) => {
         </PageRowItem>
         <PageRowItem title="Player rankings">
           <ol sx={{ pl: '1rem' }}>
-            {sortByElo(players).map((p) => (
-              <li key={p.id}>
-                {p.name} ({p.elo} elo)
+            {sortByElo(players).map((p, i) => (
+              <li key={p._id}>
+                {medalEmojis[i]} {p.name} ({p.elo} elo)
               </li>
             ))}
           </ol>
@@ -62,8 +64,8 @@ const Home: NextPage<{ players: Player[] }> = ({ players }) => {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  return await fetch(`${config.baseUrl}/api/players`)
+export const getServerSideProps: GetServerSideProps = () => {
+  return fetch(`${config.baseUrl}/api/players`)
     .then((res) => res.json())
     .then(({ data }) => ({
       props: {
