@@ -16,6 +16,7 @@ const Nav = () => (
         },
       }}
     >
+      <p sx={{ fontSize: '30px' }}>🏓</p>
       <Link href="/">
         <a sx={{ fontWeight: 'bold', fontSize: 4, cursor: 'pointer' }}>Home</a>
       </Link>

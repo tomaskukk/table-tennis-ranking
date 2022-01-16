@@ -5,7 +5,7 @@ import { FC, HTMLProps } from 'react';
 import { ThemeColors } from '../../theme';
 
 interface ButtonProps extends HTMLProps<HTMLDivElement> {
-  color?: ThemeColors;
+  color?: string | ThemeColors;
 }
 
 const Button: FC<ButtonProps> = ({ color = 'primary', children, ...restProps }) => (

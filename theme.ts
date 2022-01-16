@@ -24,20 +24,41 @@ const theme = {
     },
     page: {
       width: '100%',
-      height: '100vh',
+    },
+    pageRowItem: {
+      ':not(:first-of-type)': {
+        ml: '2rem',
+      },
     },
     content: {
-      maxWidth: '1000px',
+      maxWidth: '1200px',
       margin: '0 auto',
-      textAlign: 'center',
     },
   },
   button: {
     border: 'none',
     padding: '0.5rem',
     borderRadius: '5px',
-    display: 'inline-flex',
+    display: 'block',
+    width: 'fit-content',
     cursor: 'pointer',
+  },
+  playerListItem: {
+    mr: '1.5rem',
+    mb: '1.5rem',
+    fontSize: '20px',
+    cursor: 'pointer',
+    border: '2px solid gray',
+    p: '0.5rem',
+    borderRadius: '10px',
+    ':hover': {
+      background: 'highlight',
+    },
+  },
+  input: {
+    number: {
+      width: '5rem',
+    },
   },
   styles: {
     ...roboto.styles,

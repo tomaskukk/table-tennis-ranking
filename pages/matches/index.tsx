@@ -13,7 +13,7 @@ interface PageProps {
 export const Page: NextPage<PageProps> = ({ matches }) =>
   List<Match>({
     items: matches,
-    title: 'Players',
+    title: 'Matches',
     listHeadings: ['WinnerId', 'LoserId', 'Played at'],
     itemRenderer: (match) => (
       <div key={match.id} sx={{ variant: 'containers.listItem' }}>
