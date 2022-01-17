@@ -19,7 +19,12 @@ const List = <T extends {}>({
 }: React.PropsWithChildren<ListProps<T>>) => (
   <div {...restProps} sx={{ variant: 'containers.list' }}>
     <h1>{title}</h1>
-    <div sx={{ variant: 'containers.listItem', border: 'none', m: '0' }}>
+    <div
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${listHeadings.length - 1}, 1fr) auto`,
+      }}
+    >
       {listHeadings.map((lh) => (
         <h3 key={lh}>{lh}</h3>
       ))}

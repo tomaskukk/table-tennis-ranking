@@ -13,12 +13,16 @@ interface PageProps {
 export const Page: NextPage<PageProps> = ({ matches }) =>
   List<Match>({
     items: matches,
-    title: 'Matches',
-    listHeadings: ['WinnerId', 'LoserId', 'Played at'],
+    title: 'Matches (rounds)',
+    listHeadings: ['Winner', 'Loser', 'Won / lost elo', 'Played at'],
     itemRenderer: (match) => (
-      <div key={match._id} sx={{ variant: 'containers.listItem' }}>
-        <div>{match.winnerId}</div>
-        <div>{match.loserId}</div>
+      <div
+        key={match._id}
+        sx={{ variant: 'containers.listItem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto' }}
+      >
+        <div>{match.winner.name}</div>
+        <div>{match.loser.name}</div>
+        <div>{match.eloDiff}</div>
         <div>{new Date(match.createdAt).toLocaleDateString()}</div>
       </div>
     ),

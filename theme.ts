@@ -4,16 +4,14 @@ const theme = {
   ...roboto,
   containers: {
     list: {
-      display: 'flex',
-      flexDirection: 'column',
+      p: '2rem',
     },
     listItem: {
-      display: 'flex',
-      justifyContent: 'space-between',
       mt: '1rem',
       mb: '1rem',
       borderBottom: '1px solid gray',
-      p: '1rem',
+      pt: '1rem',
+      pb: '1rem',
     },
     card: {
       boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
