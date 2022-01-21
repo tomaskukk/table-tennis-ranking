@@ -15,14 +15,13 @@ export const Page: NextPage<PageProps> = ({ players }) =>
     items: players,
     title: 'Players',
     listHeadings: ['Name', 'Elo'],
-    itemRenderer: (player) => (
+    itemRenderer: (player, i) => (
       <div
         key={player._id}
         sx={{
           variant: 'containers.listItem',
           display: 'grid',
           gridTemplateColumns: '1fr auto',
-          // gridTemplateRows: '100px 200px',
         }}
       >
         <div>{player.name}</div>

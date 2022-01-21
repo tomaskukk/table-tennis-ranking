@@ -11,8 +11,8 @@ import '../styles/globals.css';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <Nav />
       <div sx={{ variant: 'containers.page' }}>
+        <Nav />
         <div sx={{ variant: 'containers.content' }}>
           <Component {...pageProps} />
         </div>

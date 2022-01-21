@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Label } from 'theme-ui';
+import { Input, jsx, Label } from 'theme-ui';
 import { FC, RefObject, useRef, useState, useMemo } from 'react';
 import { Player } from '../../pages/api/players';
 import Button from './Button';
@@ -21,10 +21,13 @@ const buildMatchResult = (p1: Player, p2: Player, score: number) => () => ({
 });
 
 const buildMatchResults = (p1: Player, p2: Player, p1Score: number, p2Score: number) => {
-  const matchResults = R.map(({ score, times }) => R.times(buildMatchResult(p1, p2, score), times), [
-    { score: 1, times: p1Score },
-    { score: 0, times: p2Score },
-  ]);
+  const matchResults = R.map(
+    ({ score, times }) => R.times(buildMatchResult(p1, p2, score), times),
+    [
+      { score: 1, times: p1Score },
+      { score: 0, times: p2Score },
+    ],
+  );
 
   return R.flatten(matchResults);
 };
@@ -81,24 +84,26 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
       <div sx={{ height: '100px', display: 'flex', justifyContent: 'space-between', '> *': { mr: '1rem' } }}>
         <div sx={{ display: 'flex', flexDirection: 'column' }}>
           <div>{matchPlayers[0]?.name}</div>
-          <input
+          <Input
             ref={scoreRefOne}
             name={`score-${matchPlayers[0]?._id}`}
             type="number"
+            defaultValue={0}
             min="0"
             sx={{ variant: 'input.number' }}
-          ></input>
+          />
         </div>
         <div>VS</div>
         <div>
           <div>{matchPlayers[1]?.name}</div>
-          <input
+          <Input
             ref={scoreRefTwo}
             name={`score-${matchPlayers[1]?._id}`}
             type="number"
+            defaultValue={0}
             min="0"
             sx={{ variant: 'input.number' }}
-          ></input>
+          />
         </div>
       </div>
 
@@ -123,16 +128,21 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
           }}
         >
           <Label>Filter players</Label>
-          <input type="text" value={searchFilter} onChange={e => setSearchFilter(e.target.value)} />
-          <div sx={{ display: 'flex', flexWrap: 'wrap' }}>
-            {playersFiltered.slice(0, 6).map(p => (
+          <Input
+            sx={{ mt: '0.5rem' }}
+            type="text"
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+          />
+          <div sx={{ display: 'flex', flexWrap: 'wrap', mt: '1rem' }}>
+            {playersFiltered.slice(0, 6).map((p) => (
               <div
                 key={p._id}
                 sx={{
                   variant: 'playerListItem',
                 }}
                 onClick={() => {
-                  setMatchPlayers(prev => [...prev, p]);
+                  setMatchPlayers((prev) => [...prev, p]);
                   setSearchFilter('');
                 }}
               >

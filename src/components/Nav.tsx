@@ -4,12 +4,12 @@ import { jsx } from 'theme-ui';
 import Link from 'next/link';
 
 const Nav = () => (
-  <header sx={{ height: '60px', width: '100vw', bg: 'primary', borderBottom: '1px solid', borderColor: 'primary' }}>
+  <header sx={{ height: '60px', width: '100vw', variant: 'containers.page' }}>
     <nav
       sx={{
         display: 'flex',
         alignItems: 'center',
-        variant: 'containers.page',
+
         height: '100%',
         '> *': {
           marginLeft: '2rem',

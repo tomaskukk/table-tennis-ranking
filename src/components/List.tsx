@@ -18,9 +18,14 @@ const List = <T extends {}>({
   ...restProps
 }: React.PropsWithChildren<ListProps<T>>) => (
   <div {...restProps} sx={{ variant: 'containers.list' }}>
-    <h1>{title}</h1>
+    {/* <h1>{title}</h1> */}
     <div
       sx={{
+        variant: 'containers.listItem',
+        background: 'none',
+        pt: '0',
+        pb: '0',
+        mb: '0',
         display: 'grid',
         gridTemplateColumns: `repeat(${listHeadings.length - 1}, 1fr) auto`,
       }}

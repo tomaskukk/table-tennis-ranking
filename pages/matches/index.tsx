@@ -20,7 +20,7 @@ export const Page: NextPage<PageProps> = ({ matches }) =>
         key={match._id}
         sx={{ variant: 'containers.listItem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto' }}
       >
-        <div>{match.winner.name}</div>
+        <div sx={{ width: 'fit-content' }}>{match.winner.name}</div>
         <div>{match.loser.name}</div>
         <div>{match.eloDiff}</div>
         <div>{new Date(match.createdAt).toLocaleDateString()}</div>

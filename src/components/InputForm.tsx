@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { FC, useState } from 'react';
-import { jsx } from 'theme-ui';
+import { Input, jsx } from 'theme-ui';
 import Button from './Button';
 
 interface InputFormProps {
@@ -26,12 +26,12 @@ export const InputForm: FC<InputFormProps> = ({ onClick, label, placeholder, but
         display: 'flex',
         flexDirection: 'column',
         '> :not(:first-child)': {
-          mt: '1rem !important',
+          mt: '0.5rem !important',
         },
       }}
     >
       {label && <label>{label}</label>}
-      <input
+      <Input
         type="text"
         value={inputValue}
         placeholder={placeholder}

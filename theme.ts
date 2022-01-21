@@ -1,5 +1,10 @@
 import { roboto } from '@theme-ui/presets';
 
+const extraColors = {
+  positive: '#23ecbb',
+  danger: '#ec2e5f',
+};
+
 const theme = {
   ...roboto,
   containers: {
@@ -9,9 +14,9 @@ const theme = {
     listItem: {
       mt: '1rem',
       mb: '1rem',
-      borderBottom: '1px solid gray',
-      pt: '1rem',
-      pb: '1rem',
+      background: 'background',
+      p: '1.5rem',
+      borderRadius: '.25rem',
     },
     card: {
       boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
@@ -21,7 +26,8 @@ const theme = {
       p: 2,
     },
     page: {
-      width: '100%',
+      width: '90%',
+      margin: '0 auto',
     },
     pageRowItem: {
       ':not(:first-of-type)': {
@@ -60,6 +66,10 @@ const theme = {
   },
   styles: {
     ...roboto.styles,
+  },
+  colors: {
+    ...roboto.colors,
+    ...extraColors,
   },
 };
 
