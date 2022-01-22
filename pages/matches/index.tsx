@@ -18,7 +18,7 @@ export const Page: NextPage<PageProps> = ({ matches }) =>
     itemRenderer: (match) => (
       <div
         key={match._id}
-        sx={{ variant: 'containers.listItem', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto' }}
+        sx={{ variant: 'containers.listItem', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}
       >
         <div sx={{ width: 'fit-content' }}>{match.winner.name}</div>
         <div>{match.loser.name}</div>

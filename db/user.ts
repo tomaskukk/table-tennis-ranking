@@ -17,6 +17,37 @@ export const createUser = async (db: Db, user: { name: string }) => {
 
 export const getUsers = async (db: Db) => db.collection('users').find({}).toArray();
 
+export const getUserAggregation = async (db: Db) =>
+  db
+    .collection('users')
+    .aggregate([
+      {
+        $lookup: {
+          from: 'matches',
+          localField: '_id',
+          foreignField: 'winnerId',
+          as: 'listOfWins',
+        },
+      },
+      {
+        $lookup: {
+          from: 'matches',
+          localField: '_id',
+          foreignField: 'loserId',
+          as: 'listOfLosses',
+        },
+      },
+      {
+        $project: {
+          elo: 1,
+          name: 1,
+          lossCount: { $size: '$listOfLosses' },
+          winCount: { $size: '$listOfWins' },
+        },
+      },
+    ])
+    .toArray();
+
 export const findById = async (db: Db, _id: string) => db.collection('users').findOne({ _id: new ObjectId(_id) });
 
 export const updateUser = async (db: Db, user: Record<string, any>) => {

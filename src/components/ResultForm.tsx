@@ -1,12 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Input, jsx, Label } from 'theme-ui';
+import { jsx, Label } from 'theme-ui';
 import { FC, RefObject, useRef, useState, useMemo } from 'react';
 import { Player } from '../../pages/api/players';
 import Button from './Button';
 import { postData, refreshServerSideProps } from '../utils';
 import * as R from 'ramda';
 import { useRouter } from 'next/router';
+import { Input } from './Input';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -84,26 +85,12 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
       <div sx={{ height: '100px', display: 'flex', justifyContent: 'space-between', '> *': { mr: '1rem' } }}>
         <div sx={{ display: 'flex', flexDirection: 'column' }}>
           <div>{matchPlayers[0]?.name}</div>
-          <Input
-            ref={scoreRefOne}
-            name={`score-${matchPlayers[0]?._id}`}
-            type="number"
-            defaultValue={0}
-            min="0"
-            sx={{ variant: 'input.number' }}
-          />
+          <Input ref={scoreRefOne} type="number" defaultValue={0} min="0" sx={{ variant: 'input.number' }} />
         </div>
         <div>VS</div>
         <div>
           <div>{matchPlayers[1]?.name}</div>
-          <Input
-            ref={scoreRefTwo}
-            name={`score-${matchPlayers[1]?._id}`}
-            type="number"
-            defaultValue={0}
-            min="0"
-            sx={{ variant: 'input.number' }}
-          />
+          <Input ref={scoreRefTwo} type="number" defaultValue={0} min="0" sx={{ variant: 'input.number' }} />
         </div>
       </div>
 
@@ -127,9 +114,9 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
             },
           }}
         >
-          <Label>Filter players</Label>
           <Input
             sx={{ mt: '0.5rem' }}
+            label="Filter players"
             type="text"
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}

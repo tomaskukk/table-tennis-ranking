@@ -1,8 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { FC, useState } from 'react';
-import { Input, jsx } from 'theme-ui';
+import { jsx } from 'theme-ui';
 import Button from './Button';
+import { Input } from './Input';
 
 interface InputFormProps {
   onClick: (inputValue: string) => void;
@@ -30,8 +31,8 @@ export const InputForm: FC<InputFormProps> = ({ onClick, label, placeholder, but
         },
       }}
     >
-      {label && <label>{label}</label>}
       <Input
+        label={label}
         type="text"
         value={inputValue}
         placeholder={placeholder}

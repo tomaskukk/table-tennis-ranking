@@ -27,7 +27,7 @@ const List = <T extends {}>({
         pb: '0',
         mb: '0',
         display: 'grid',
-        gridTemplateColumns: `repeat(${listHeadings.length - 1}, 1fr) auto`,
+        gridTemplateColumns: `repeat(${listHeadings.length}, 1fr)`,
       }}
     >
       {listHeadings.map((lh) => (
