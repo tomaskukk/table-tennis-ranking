@@ -84,13 +84,25 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
       {/* <h3>Choose players:</h3> */}
       <div sx={{ height: '100px', display: 'flex', justifyContent: 'space-between', '> *': { mr: '1rem' } }}>
         <div sx={{ display: 'flex', flexDirection: 'column' }}>
-          <div>{matchPlayers[0]?.name}</div>
-          <Input ref={scoreRefOne} type="number" defaultValue={0} min="0" sx={{ variant: 'input.number' }} />
+          <Input
+            label={matchPlayers[0]?.name}
+            ref={scoreRefOne}
+            type="number"
+            defaultValue={0}
+            min="0"
+            sx={{ variant: 'input.number' }}
+          />
         </div>
         <div>VS</div>
         <div>
-          <div>{matchPlayers[1]?.name}</div>
-          <Input ref={scoreRefTwo} type="number" defaultValue={0} min="0" sx={{ variant: 'input.number' }} />
+          <Input
+            label={matchPlayers[1]?.name}
+            ref={scoreRefTwo}
+            type="number"
+            defaultValue={0}
+            min="0"
+            sx={{ variant: 'input.number' }}
+          />
         </div>
       </div>
 

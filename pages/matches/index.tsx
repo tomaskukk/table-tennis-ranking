@@ -5,6 +5,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { config } from '../../config';
 import { Match } from '../api/matches';
 import List from '../../src/components/List';
+import { sortByDate } from '../../src/utils';
 
 interface PageProps {
   matches: Match[];
@@ -12,7 +13,7 @@ interface PageProps {
 
 export const Page: NextPage<PageProps> = ({ matches }) =>
   List<Match>({
-    items: matches,
+    items: sortByDate('createdAt', matches),
     title: 'Matches (rounds)',
     listHeadings: ['Winner', 'Loser', 'Won / lost elo', 'Played at'],
     itemRenderer: (match) => (
@@ -20,7 +21,7 @@ export const Page: NextPage<PageProps> = ({ matches }) =>
         key={match._id}
         sx={{ variant: 'containers.listItem', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}
       >
-        <div sx={{ width: 'fit-content' }}>{match.winner.name}</div>
+        <div>{match.winner.name}</div>
         <div>{match.loser.name}</div>
         <div>{match.eloDiff}</div>
         <div>{new Date(match.createdAt).toLocaleDateString()}</div>

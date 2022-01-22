@@ -30,7 +30,6 @@ const Home: NextPage<{ players: Player[] }> = ({ players }) => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          // flex: '1 1 0px',
           '> *': {
             p: '1rem',
             width: '500px',
