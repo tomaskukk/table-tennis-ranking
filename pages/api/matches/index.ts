@@ -28,22 +28,26 @@ type Data = {
 };
 
 const calculateNewEloForPlayers = (p1: Player, p2: Player, matches: InputMatchData[]) => {
-  const { p1EloDiff, p2EloDiff } = R.reduce(
+  const { p1EloDiff, p2EloDiff, eloDiffs } = R.reduce(
     (acc, curr) => {
       const p1NewEloDiff = R.add(R.prop('p1EloDiff', acc));
       const p2NewEloDiff = R.add(R.prop('p2EloDiff', acc));
       const { playerARatingDiff, playerBRatingDiff } = ratingSystem.getNextRatings(p1.elo, p2.elo, curr.score);
 
-      return { p1EloDiff: p1NewEloDiff(playerARatingDiff), p2EloDiff: p2NewEloDiff(playerBRatingDiff) };
+      return {
+        p1EloDiff: p1NewEloDiff(playerARatingDiff),
+        p2EloDiff: p2NewEloDiff(playerBRatingDiff),
+        eloDiffs: [...acc.eloDiffs, playerARatingDiff],
+      };
     },
-    { p1EloDiff: 0, p2EloDiff: 0 },
+    { p1EloDiff: 0, p2EloDiff: 0, eloDiffs: [] as number[] },
     matches,
   );
 
   const newP1Elo = R.add(p1EloDiff, p1.elo);
   const newP2Elo = R.add(p2EloDiff, p2.elo);
 
-  return { newP1Elo, newP2Elo, diff: p1EloDiff };
+  return { newP1Elo, newP2Elo, eloDiffs };
 };
 
 export default nc<CustomNextRequest, NextApiResponse<Data>>()
@@ -67,12 +71,12 @@ export default nc<CustomNextRequest, NextApiResponse<Data>>()
       return res.status(400).end();
     }
 
-    const { newP1Elo, newP2Elo, diff } = calculateNewEloForPlayers(p1, p2, matches);
+    const { newP1Elo, newP2Elo, eloDiffs } = calculateNewEloForPlayers(p1, p2, matches);
 
-    const matchesFormatted = matches.map(({ score, p1Id, p2Id }) => ({
-      winnerId: new ObjectId(score === 1 ? p1Id : p2Id),
-      loserId: new ObjectId(score === 1 ? p2Id : p1Id),
-      eloDiff: Math.abs(diff),
+    const matchesFormatted = matches.map(({ score, p1Id, p2Id }, i) => ({
+      winnerId: score === 1 ? p1Id : p2Id,
+      loserId: score === 1 ? p2Id : p1Id,
+      eloDiff: Math.abs(eloDiffs[i]),
     }));
 
     const newMatches = await createManyMatches(req.db, matchesFormatted);
