@@ -1,21 +1,12 @@
-import { Db, ObjectId } from 'mongodb';
+import { matches, Prisma, users } from '@prisma/client';
 import type { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import R from 'ramda';
-import { createManyMatches, getMatchesAggregated } from '../../../db/match';
+import { createManyMatches, getMatches } from '../../../db/match';
 import { findById, updateUser } from '../../../db/user';
 import middleware from '../../../middleware/all';
 import ratingSystem from '../../../src/ratingSystem';
 import { CustomNextRequest } from '../../../src/types/next';
-import { Player } from '../players';
-
-export type Match = {
-  // id: string;
-  // winnerId: string;
-  // loserId: string;
-  // createdAt: string;
-  [key: string]: any;
-};
 
 interface InputMatchData {
   p1Id: string;
@@ -24,10 +15,10 @@ interface InputMatchData {
 }
 
 type Data = {
-  data: Match[] | Match;
+  data: number | matches[];
 };
 
-const calculateNewEloForPlayers = (p1: Player, p2: Player, matches: InputMatchData[]) => {
+const calculateNewEloForPlayers = (p1: users, p2: users, matches: InputMatchData[]) => {
   const { p1EloDiff, p2EloDiff, eloDiffs } = R.reduce(
     (acc, curr) => {
       const p1NewEloDiff = R.add(R.prop('p1EloDiff', acc));
@@ -53,19 +44,24 @@ const calculateNewEloForPlayers = (p1: Player, p2: Player, matches: InputMatchDa
 export default nc<CustomNextRequest, NextApiResponse<Data>>()
   .use(middleware)
   .get(async (req, res) => {
-    const matches = await getMatchesAggregated(req.db);
+    const matches = await getMatches(req.dbClient, {
+      include: {
+        winner: true,
+        loser: true,
+      },
+    });
+
     res.status(200).json({ data: matches });
   })
   .post(async (req, res) => {
     const matches: InputMatchData[] | undefined = req.body.data;
-
     if (!matches) {
       return res.status(400).end();
     }
 
     const [{ p1Id, p2Id }] = matches;
 
-    const [p1, p2] = await Promise.all([findById(req.db, p1Id), findById(req.db, p2Id)]);
+    const [p1, p2] = await Promise.all([findById(req.dbClient, p1Id), findById(req.dbClient, p2Id)]);
 
     if (!p1 || !p2) {
       return res.status(400).end();
@@ -79,14 +75,14 @@ export default nc<CustomNextRequest, NextApiResponse<Data>>()
       eloDiff: Math.abs(eloDiffs[i]),
     }));
 
-    const newMatches = await createManyMatches(req.db, matchesFormatted);
+    const count = await createManyMatches(req.dbClient, matchesFormatted);
 
     const updatePlayerInput = [
-      { elo: newP1Elo, _id: p1Id },
-      { elo: newP2Elo, _id: p2Id },
+      { elo: newP1Elo, id: p1Id },
+      { elo: newP2Elo, id: p2Id },
     ];
 
-    await Promise.all(updatePlayerInput.map((input) => updateUser(req.db, input)));
+    await Promise.all(updatePlayerInput.map((input) => updateUser(req.dbClient, input)));
 
-    res.status(200).json({ data: newMatches });
+    res.status(200).json({ data: count });
   });

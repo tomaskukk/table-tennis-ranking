@@ -3,22 +3,22 @@
 import { jsx } from 'theme-ui';
 import { GetServerSideProps, NextPage } from 'next';
 import { config } from '../../config';
-import { Player } from '../api/players';
 import List from '../../src/components/List';
 import { sortByElo } from '../../src/utils';
+import { PlayerWithMatchCounts } from '../../src/types/models';
 
 interface PageProps {
-  players: Player[];
+  players: PlayerWithMatchCounts[];
 }
 
 export const Page: NextPage<PageProps> = ({ players }) =>
-  List<Player>({
+  List<PlayerWithMatchCounts>({
     items: sortByElo(players),
     title: 'Players',
     listHeadings: ['Name', 'Wins (rounds)', 'Losses (rounds)', 'Elo'],
     itemRenderer: (player, i) => (
       <div
-        key={player._id}
+        key={player.id}
         sx={{
           variant: 'containers.listItem',
           display: 'grid',
@@ -26,8 +26,8 @@ export const Page: NextPage<PageProps> = ({ players }) =>
         }}
       >
         <div>{player.name}</div>
-        <div>{player.winCount}</div>
-        <div>{player.lossCount}</div>
+        <div>{player._count.wins}</div>
+        <div>{player._count.losses}</div>
         <div>{player.elo}</div>
       </div>
     ),

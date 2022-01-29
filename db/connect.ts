@@ -1,6 +1,6 @@
-import { MongoClient } from 'mongodb';
+import { PrismaClient } from '@prisma/client';
 
-global.mongo = global.mongo || null;
+global.prisma = global.prisma || null;
 
 export const connectToDB = async () => {
   if (!process.env.DATABASE_URL) {
@@ -11,19 +11,16 @@ export const connectToDB = async () => {
     throw new Error('DATABASE_NAME env variable is missing');
   }
 
-  if (!global.mongo) {
-    console.log('connecting to DB');
+  if (!global.prisma) {
+    console.log('connecting to DB with prisma..');
+    const client = new PrismaClient();
 
-    const client = new MongoClient(process.env.DATABASE_URL, {
-      connectTimeoutMS: 10000,
-    });
+    await client.$connect();
 
-    global.mongo = { client };
-    await global.mongo.client.connect();
-    console.log('connected to DB');
+    global.prisma = { client };
+
+    console.log('succesfully connected with prisma');
   }
 
-  const db = global.mongo.client.db(process.env.DATABASE_NAME);
-
-  return { db, dbClient: global.mongo.client };
+  return { prisma: global.prisma.client };
 };

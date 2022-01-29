@@ -1,8 +1,13 @@
 import { NextRouter } from 'next/router';
 import * as R from 'ramda';
-import { Player } from '../../pages/api/players';
 
-export const sortByElo = (players: Array<Player & any>) => R.sortWith([R.descend(R.prop('elo'))], players);
+export const sortByElo = <
+  T extends {
+    elo: number;
+  },
+>(
+  players: T[],
+) => R.sortWith([R.descend(R.prop('elo'))], players);
 
 const dateProp = (prop: string) =>
   R.pipe(
