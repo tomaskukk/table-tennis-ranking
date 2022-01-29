@@ -7,8 +7,8 @@ import { config } from '../config';
 import { postData, refreshServerSideProps, sortByElo } from '../src/utils';
 import { PageRowItem } from '../src/components/PageRowItem';
 import { ResultForm } from '../src/components/ResultForm';
-import { Player } from './api/players';
 import { NextRouter, useRouter } from 'next/router';
+import { users } from '@prisma/client';
 
 const medalEmojis = ['🥇', '🥈', '🥉'];
 
@@ -20,7 +20,7 @@ const addPlayer = (router: NextRouter) => (name: string) => {
     .then(() => refreshServerSideProps(router));
 };
 
-const Home: NextPage<{ players: Player[] }> = ({ players }) => {
+const Home: NextPage<{ players: users[] }> = ({ players }) => {
   const router = useRouter();
   return (
     <div>
@@ -49,8 +49,8 @@ const Home: NextPage<{ players: Player[] }> = ({ players }) => {
         </PageRowItem>
         <PageRowItem title="Player rankings">
           <ol sx={{ pl: '1rem' }}>
-            {sortByElo(players as any).map((p, i) => (
-              <li key={p._id}>
+            {sortByElo(players).map((p, i) => (
+              <li key={p.id}>
                 {medalEmojis[i]} {p.name} ({p.elo} elo)
               </li>
             ))}

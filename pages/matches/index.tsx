@@ -3,22 +3,22 @@
 import { jsx } from 'theme-ui';
 import { GetServerSideProps, NextPage } from 'next';
 import { config } from '../../config';
-import { Match } from '../api/matches';
 import List from '../../src/components/List';
 import { sortByDate } from '../../src/utils';
+import { MatchWithRelations } from '../../src/types/models';
 
 interface PageProps {
-  matches: Match[];
+  matches: MatchWithRelations[];
 }
 
 export const Page: NextPage<PageProps> = ({ matches }) =>
-  List<Match>({
+  List<MatchWithRelations>({
     items: sortByDate('createdAt', matches),
     title: 'Matches (rounds)',
     listHeadings: ['Winner', 'Loser', 'Won / lost elo', 'Played at'],
     itemRenderer: (match) => (
       <div
-        key={match._id}
+        key={match.id}
         sx={{ variant: 'containers.listItem', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}
       >
         <div>{match.winner.name}</div>

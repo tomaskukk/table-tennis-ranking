@@ -1,58 +1,38 @@
-import { Db, ObjectId } from 'mongodb';
-import * as R from 'ramda';
-import { getDocument, newDateString } from './utils';
+import { Prisma, PrismaClient } from '@prisma/client';
+import R from 'ramda';
+import { newDateString } from './utils';
 
-export const createUser = async (db: Db, user: { name: string }) => {
-  const newUser = await db
-    .collection('users')
-    .insertOne({
+export const createUser = async (dbClient: PrismaClient, user: { name: string }) => {
+  const newUser = await dbClient.users.create({
+    data: {
       ...user,
       elo: 1200,
       createdAt: newDateString(),
-    })
-    .then(getDocument(db, 'users'));
+    },
+  });
 
   return newUser;
 };
 
-export const getUsers = async (db: Db) => db.collection('users').find({}).toArray();
+export const getUsers = async (dbClient: PrismaClient, options: Prisma.usersFindManyArgs = {}) =>
+  dbClient.users.findMany(options);
 
-export const getUserAggregation = async (db: Db) =>
-  db
-    .collection('users')
-    .aggregate([
-      {
-        $lookup: {
-          from: 'matches',
-          localField: '_id',
-          foreignField: 'winnerId',
-          as: 'listOfWins',
-        },
-      },
-      {
-        $lookup: {
-          from: 'matches',
-          localField: '_id',
-          foreignField: 'loserId',
-          as: 'listOfLosses',
-        },
-      },
-      {
-        $project: {
-          elo: 1,
-          name: 1,
-          lossCount: { $size: '$listOfLosses' },
-          winCount: { $size: '$listOfWins' },
-        },
-      },
-    ])
-    .toArray();
+export const findById = async (dbClient: PrismaClient, id: string) =>
+  dbClient.users.findUnique({
+    where: {
+      id,
+    },
+  });
 
-export const findById = async (db: Db, _id: string) => db.collection('users').findOne({ _id: new ObjectId(_id) });
+export const updateUser = async (dbClient: PrismaClient, user: Record<string, any>) => {
+  const updatedUser = await dbClient.users.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      ...R.omit(['id'], user),
+    },
+  });
 
-export const updateUser = async (db: Db, user: Record<string, any>) => {
-  const _id = new ObjectId(user._id);
-  await db.collection('users').updateOne({ _id }, { $set: R.omit(['_id'], user) });
-
-  return db.collection('users').findOne({ _id });
+  return updatedUser;
 };

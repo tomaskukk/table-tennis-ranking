@@ -1,8 +1,8 @@
-import { MongoClient } from 'mongodb';
+import { PrismaClient } from '@prisma/client';
 
 declare global {
-  var mongo: {
-    client: MongoClient;
+  var prisma: {
+    client: PrismaClient;
   };
 }
 export {};

@@ -1,19 +1,19 @@
+import { users } from '@prisma/client';
 import type { NextApiResponse } from 'next';
 import nc from 'next-connect';
-import { Player } from '.';
 import { findById } from '../../../db/user';
 import middleware from '../../../middleware/all';
 import { CustomNextRequest } from '../../../src/types/next';
 
 type Data = {
-  player: Player;
+  player: users;
 };
 
 export default nc<CustomNextRequest, NextApiResponse<Data>>()
   .use(middleware)
-  .get((req, res) => {
+  .get(async (req, res) => {
     const id = req.query['id'] as string;
-    const player = findById(req.db, id);
+    const player = await findById(req.dbClient, id);
     if (!player) {
       return res.status(404).end();
     }

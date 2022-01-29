@@ -1,27 +1,27 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Label } from 'theme-ui';
+import { jsx } from 'theme-ui';
 import { FC, RefObject, useRef, useState, useMemo } from 'react';
-import { Player } from '../../pages/api/players';
 import Button from './Button';
 import { postData, refreshServerSideProps } from '../utils';
 import * as R from 'ramda';
 import { useRouter } from 'next/router';
 import { Input } from './Input';
+import { users } from '@prisma/client';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 interface ResultFormProps {
-  players: Player[];
+  players: users[];
 }
 
-const buildMatchResult = (p1: Player, p2: Player, score: number) => () => ({
-  p1Id: p1._id,
-  p2Id: p2._id,
+const buildMatchResult = (p1: users, p2: users, score: number) => () => ({
+  p1Id: p1.id,
+  p2Id: p2.id,
   score,
 });
 
-const buildMatchResults = (p1: Player, p2: Player, p1Score: number, p2Score: number) => {
+const buildMatchResults = (p1: users, p2: users, p1Score: number, p2Score: number) => {
   const matchResults = R.map(
     ({ score, times }) => R.times(buildMatchResult(p1, p2, score), times),
     [
@@ -38,7 +38,7 @@ const getRefValueAsNum = (ref: RefObject<HTMLInputElement>) => Number(ref.curren
 const postMatchData = (data: { p1Id: string; p2Id: string; score: number }[]) =>
   postData(`${baseUrl}/api/matches`, { data });
 
-const constructAlertMessage = (players: Player[], p1Score: number, p2Score: number) => () => {
+const constructAlertMessage = (players: users[], p1Score: number, p2Score: number) => () => {
   if (p1Score === p2Score) {
     return `Thanks for submitting the game! It's a tie I see.. 🧐`;
   }
@@ -49,13 +49,13 @@ const constructAlertMessage = (players: Player[], p1Score: number, p2Score: numb
 };
 
 export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
-  const [matchPlayers, setMatchPlayers] = useState<Player[]>([]);
+  const [matchPlayers, setMatchPlayers] = useState<users[]>([]);
   const [searchFilter, setSearchFilter] = useState('');
   const router = useRouter();
   const scoreRefOne = useRef<HTMLInputElement>(null);
   const scoreRefTwo = useRef<HTMLInputElement>(null);
 
-  const nthPlayer = (n: number) => R.nth(n, matchPlayers) as Player;
+  const nthPlayer = (n: number) => R.nth(n, matchPlayers) as users;
 
   const p1 = nthPlayer(0);
   const p2 = nthPlayer(1);
@@ -136,7 +136,7 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
           <div sx={{ display: 'flex', flexWrap: 'wrap', mt: '1rem' }}>
             {playersFiltered.slice(0, 6).map((p) => (
               <div
-                key={p._id}
+                key={p.id}
                 sx={{
                   variant: 'playerListItem',
                 }}
