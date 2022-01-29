@@ -7,6 +7,10 @@ export const connectToDB = async () => {
     throw new Error('DATABASE_URL env variable is missing');
   }
 
+  if (!process.env.DATABASE_NAME) {
+    throw new Error('DATABASE_NAME env variable is missing');
+  }
+
   if (!global.mongo) {
     console.log('connecting to DB');
 
