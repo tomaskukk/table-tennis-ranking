@@ -26,7 +26,7 @@ export const InputForm: FC<InputFormProps> = ({ onClick, label, placeholder, but
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        '> :not(:first-child)': {
+        '> :not(:first-of-type)': {
           mt: '0.5rem !important',
         },
       }}
