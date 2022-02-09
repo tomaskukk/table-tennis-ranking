@@ -8,6 +8,7 @@ import { postData, refreshServerSideProps } from '../utils';
 import * as R from 'ramda';
 import { useRouter } from 'next/router';
 import { Input } from './Input';
+import styled from 'styled-components';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -47,6 +48,16 @@ const constructAlertMessage = (players: Player[], p1Score: number, p2Score: numb
 
   return `Well done ${winner.name}, the game has been saved`;
 };
+
+const PlayerListItem = styled.div`
+  margin-right: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 20px;
+  cursor: pointer;
+  border: 2px solid gray;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+`;
 
 export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
   const [matchPlayers, setMatchPlayers] = useState<Player[]>([]);
@@ -107,7 +118,7 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
       </div>
 
       {matchPlayers.length === 2 ? (
-        <div sx={{ display: 'flex', '> :first-child': { mr: '1rem' } }}>
+        <div sx={{ display: 'flex', '> :first-of-type': { mr: '1rem' } }}>
           <Button onClick={handleSendResults}>Send results!</Button>
           <Button
             color="grey"
@@ -135,18 +146,15 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
           />
           <div sx={{ display: 'flex', flexWrap: 'wrap', mt: '1rem' }}>
             {playersFiltered.slice(0, 6).map((p) => (
-              <div
-                key={p._id}
-                sx={{
-                  variant: 'playerListItem',
-                }}
+              <PlayerListItem
+                key={p.id}
                 onClick={() => {
                   setMatchPlayers((prev) => [...prev, p]);
                   setSearchFilter('');
                 }}
               >
                 {p.name}
-              </div>
+              </PlayerListItem>
             ))}
             {playersFiltered.length - 6 > 0 && (
               <div sx={{ alignSelf: 'flex-end', mb: '1rem', flexBasis: '100%' }}>
