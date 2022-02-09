@@ -2,6 +2,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import type { GetServerSideProps, NextPage } from 'next';
+import styled from 'styled-components';
+
 import { InputForm } from '../src/components/InputForm';
 import { config } from '../config';
 import { postData, refreshServerSideProps, sortByElo } from '../src/utils';
@@ -9,8 +11,7 @@ import { PageRowItem } from '../src/components/PageRowItem';
 import { ResultForm } from '../src/components/ResultForm';
 import { Player } from './api/players';
 import { NextRouter, useRouter } from 'next/router';
-
-const medalEmojis = ['🥇', '🥈', '🥉'];
+import { Ranking } from '../src/components/Ranking';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -20,22 +21,25 @@ const addPlayer = (router: NextRouter) => (name: string) => {
     .then(() => refreshServerSideProps(router));
 };
 
-const Home: NextPage<{ players: Player[] }> = ({ players }) => {
+const StyledHome = styled.div``;
+
+const PageColumn = styled.div`
+  display: flex;
+  justify-content: space-between;
+  > * {
+    padding: 1rem;
+    width: 500px;
+  }
+`;
+
+const Home: NextPage<{ players: users[] }> = ({ players }) => {
   const router = useRouter();
   return (
-    <div>
-      <h1 sx={{ textAlign: 'center' }}>Table tennis ranking system</h1>
-
-      <div
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          '> *': {
-            p: '1rem',
-            width: '500px',
-          },
-        }}
-      >
+    <StyledHome>
+      <PageRowItem title="">
+        <Ranking players={players} />
+      </PageRowItem>
+      <PageColumn>
         <PageRowItem title="Add players">
           <InputForm
             onClick={addPlayer(router)}
@@ -47,17 +51,8 @@ const Home: NextPage<{ players: Player[] }> = ({ players }) => {
         <PageRowItem title="Write results (e.g 2-1 for BO3)">
           <ResultForm players={players} />
         </PageRowItem>
-        <PageRowItem title="Player rankings">
-          <ol sx={{ pl: '1rem' }}>
-            {sortByElo(players as any).map((p, i) => (
-              <li key={p._id}>
-                {medalEmojis[i]} {p.name} ({p.elo} elo)
-              </li>
-            ))}
-          </ol>
-        </PageRowItem>
-      </div>
-    </div>
+      </PageColumn>
+    </StyledHome>
   );
 };
 
