@@ -9,7 +9,7 @@ datasource db {
 }
 
 model matches {
-  id        String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   createdAt String
   eloDiff   Int
   loserId   String @db.ObjectId
@@ -19,7 +19,7 @@ model matches {
 }
 
 model users {
-  id        String    @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   createdAt String
   elo       Int
   name      String
