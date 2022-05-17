@@ -9,7 +9,6 @@ import { config } from '../config';
 import { postData, refreshServerSideProps, sortByElo } from '../src/utils';
 import { PageRowItem } from '../src/components/PageRowItem';
 import { ResultForm } from '../src/components/ResultForm';
-import { Player } from './api/players';
 import { NextRouter, useRouter } from 'next/router';
 import { Ranking } from '../src/components/Ranking';
 
@@ -44,7 +43,7 @@ const Divider = styled.div`
   border-bottom: 1px solid #fff;
 `;
 
-const Home: NextPage<{ players: users[] }> = ({ players }) => {
+const Home: NextPage<{ players: any[] }> = ({ players }) => {
   const router = useRouter();
   return (
     <StyledHome>

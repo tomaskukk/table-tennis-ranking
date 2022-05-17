@@ -8,6 +8,7 @@ import * as R from 'ramda';
 import { useRouter } from 'next/router';
 import { Input } from './Input';
 import styled from 'styled-components';
+import { Player } from '../../pages/api/players';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 

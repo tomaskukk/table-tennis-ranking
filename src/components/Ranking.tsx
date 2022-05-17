@@ -3,7 +3,6 @@
 import { jsx } from 'theme-ui';
 import React, { FC } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { users } from '@prisma/client';
 
 import { sortByElo } from '../../src/utils';
 
@@ -47,7 +46,7 @@ const Neon = styled.div<{
    4px 0vw 200px ${(props) => props.shadow_color};
 `;
 
-export const Ranking: FC<{ players: users[] }> = ({ players }) => {
+export const Ranking: FC<{ players: any[] }> = ({ players }) => {
   const playersSortedByElo = sortByElo(players);
   return (
     <StyledRanking>
