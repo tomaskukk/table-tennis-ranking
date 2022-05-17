@@ -45,7 +45,7 @@ const Neon = styled.div<{
   shadow_color: string;
   flicker?: 'slow' | 'fast';
 }>`
-  font-size: 4rem;
+  font-size: 6rem;
   color: ${(props) => props.text_color};
   font-weight: 400;
   letter-spacing: 8px;
