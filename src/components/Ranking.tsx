@@ -13,7 +13,7 @@ const StyledRanking = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 2rem;
-  margin-top: 3rem;
+  margin: 3rem;
   font-family: 'HELLODENVERDISPLAYREGULARRg';
   text-transform: uppercase;
   width: 100%;
@@ -52,7 +52,7 @@ export const Ranking: FC<{ players: users[] }> = ({ players }) => {
   return (
     <StyledRanking>
       <Players>
-        {playersSortedByElo.slice(0, 5).map((p, i) => (
+        {playersSortedByElo.map((p, i) => (
           <Player key={p.id}>
             <Neon text_color={i === 0 ? '#FEF095' : '#fff'} shadow_color={i === 0 ? '#FFA02D' : '#fff'}>
               {i + 1}.{p.name} {p.elo}

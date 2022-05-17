@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { FC, RefObject, useRef, useState, useMemo } from 'react';
+import React, { FC, RefObject, useRef, useState, useMemo } from 'react';
 import Button from './Button';
 import { postData, refreshServerSideProps } from '../utils';
 import * as R from 'ramda';
@@ -49,6 +49,10 @@ const constructAlertMessage = (players: users[], p1Score: number, p2Score: numbe
   return `Well done ${winner.name}, the game has been saved`;
 };
 
+const StyledResultForm = styled.div`
+  margin-bottom: 1rem;
+`;
+
 const PlayerListItem = styled.div`
   margin-right: 1rem;
   margin-bottom: 1.5rem;
@@ -59,6 +63,40 @@ const PlayerListItem = styled.div`
   border-radius: 0.5rem;
 `;
 
+const PlayerVsPlayerRow = styled.div`
+  height: 6.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  > * {
+    margin-right: 1rem;
+  }
+  margin-bottom: 3rem;
+`;
+
+const PlayerPicker = styled.div`
+  min-height: 15rem;
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  > :first-of-type {
+    margin-right: 1rem;
+  }
+`;
+
+const PlayerNamesList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const AdditionalPlayersText = styled.div`
+  align-self: flex-end;
+  margin-bottom: 1rem;
+  flex-basis: 100%;
+`;
 export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
   const [matchPlayers, setMatchPlayers] = useState<users[]>([]);
   const [searchFilter, setSearchFilter] = useState('');
@@ -91,79 +129,69 @@ export const ResultForm: FC<ResultFormProps> = ({ players, ...restProps }) => {
   );
 
   return (
-    <div {...restProps}>
+    <StyledResultForm {...restProps}>
       {/* <h3>Choose players:</h3> */}
-      <div sx={{ height: '100px', display: 'flex', justifyContent: 'space-between', '> *': { mr: '1rem' } }}>
-        <div sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Input
-            label={matchPlayers[0]?.name}
-            ref={scoreRefOne}
-            type="number"
-            defaultValue={0}
-            min="0"
-            sx={{ variant: 'input.number' }}
-          />
-        </div>
+      <PlayerVsPlayerRow>
+        <Input
+          label={matchPlayers[0]?.name}
+          ref={scoreRefOne}
+          type="number"
+          defaultValue={0}
+          min="0"
+          sx={{ variant: 'input.number' }}
+        />
         <div>VS</div>
-        <div>
-          <Input
-            label={matchPlayers[1]?.name}
-            ref={scoreRefTwo}
-            type="number"
-            defaultValue={0}
-            min="0"
-            sx={{ variant: 'input.number' }}
-          />
-        </div>
-      </div>
+        <Input
+          label={matchPlayers[1]?.name}
+          ref={scoreRefTwo}
+          type="number"
+          defaultValue={0}
+          min="0"
+          sx={{ variant: 'input.number' }}
+        />
+      </PlayerVsPlayerRow>
 
-      {matchPlayers.length === 2 ? (
-        <div sx={{ display: 'flex', '> :first-of-type': { mr: '1rem' } }}>
-          <Button onClick={handleSendResults}>Send results!</Button>
-          <Button
-            color="grey"
-            onClick={() => {
-              setMatchPlayers([]);
-            }}
-          >
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <div
-          sx={{
-            '> *': {
-              mb: '1rem',
-            },
-          }}
-        >
-          <Input
-            sx={{ mt: '0.5rem' }}
-            label="Filter players"
-            type="text"
-            value={searchFilter}
-            onChange={(e) => setSearchFilter(e.target.value)}
-          />
-          <div sx={{ display: 'flex', flexWrap: 'wrap', mt: '1rem' }}>
-            {playersFiltered.slice(0, 6).map((p) => (
-              <PlayerListItem
-                key={p.id}
-                onClick={() => {
-                  setMatchPlayers((prev) => [...prev, p]);
-                  setSearchFilter('');
-                }}
-              >
-                {p.name}
-              </PlayerListItem>
-            ))}
-            {playersFiltered.length - 6 > 0 && (
-              <div sx={{ alignSelf: 'flex-end', mb: '1rem', flexBasis: '100%' }}>
-                and {playersFiltered.length - 6} more..
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
+      <PlayerPicker>
+        {matchPlayers.length === 2 ? (
+          <Buttons>
+            <Button onClick={handleSendResults}>Send results!</Button>
+            <Button
+              color="grey"
+              onClick={() => {
+                setMatchPlayers([]);
+              }}
+            >
+              Cancel
+            </Button>
+          </Buttons>
+        ) : (
+          <>
+            <Input
+              sx={{ mt: '0.5rem', mb: '1rem' }}
+              label="Filter players"
+              type="text"
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value)}
+            />
+            <PlayerNamesList>
+              {playersFiltered.slice(0, 6).map((p) => (
+                <PlayerListItem
+                  key={p.id}
+                  onClick={() => {
+                    setMatchPlayers((prev) => [...prev, p]);
+                    setSearchFilter('');
+                  }}
+                >
+                  {p.name}
+                </PlayerListItem>
+              ))}
+              {playersFiltered.length - 6 > 0 && (
+                <AdditionalPlayersText>and {playersFiltered.length - 6} more...</AdditionalPlayersText>
+              )}
+            </PlayerNamesList>
+          </>
+        )}
+      </PlayerPicker>
+    </StyledResultForm>
   );
 };

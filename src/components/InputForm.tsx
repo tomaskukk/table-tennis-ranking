@@ -2,6 +2,7 @@
 /** @jsx jsx */
 import { FC, useState } from 'react';
 import { jsx } from 'theme-ui';
+import styled from 'styled-components';
 import Button from './Button';
 import { Input } from './Input';
 
@@ -12,6 +13,14 @@ interface InputFormProps {
   buttonLabel: string;
 }
 
+const StyledInputForm = styled.div`
+  display: 'flex';
+  flex-direction: 'column';
+  > :not(:first-of-type) {
+    margin-top: 0.5rem !important;
+  }
+`;
+
 export const InputForm: FC<InputFormProps> = ({ onClick, label, placeholder, buttonLabel, ...restProps }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -21,16 +30,7 @@ export const InputForm: FC<InputFormProps> = ({ onClick, label, placeholder, but
   };
 
   return (
-    <div
-      {...restProps}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        '> :not(:first-of-type)': {
-          mt: '0.5rem !important',
-        },
-      }}
-    >
+    <StyledInputForm {...restProps}>
       <Input
         label={label}
         type="text"
@@ -40,6 +40,6 @@ export const InputForm: FC<InputFormProps> = ({ onClick, label, placeholder, but
         sx={{ width: '20rem', mb: '1rem' }}
       />
       <Button onClick={handleClick}>{buttonLabel}</Button>
-    </div>
+    </StyledInputForm>
   );
 };
