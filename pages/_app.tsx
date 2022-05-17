@@ -46,7 +46,7 @@ const Page = styled.div`
 
 const Content = styled.div`
 background-color: #070613 ;
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
 `;
 

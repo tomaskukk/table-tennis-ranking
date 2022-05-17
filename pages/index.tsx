@@ -32,24 +32,39 @@ const PageColumn = styled.div`
   }
 `;
 
+const ResultFormItem = styled(PageRowItem)`
+  margin-top: 4rem;
+`;
+
+const AddPlayerItem = styled(PageRowItem)`
+  margin-top: 2rem;
+`;
+
+const Divider = styled.div`
+  border-bottom: 1px solid #fff;
+`;
+
 const Home: NextPage<{ players: users[] }> = ({ players }) => {
   const router = useRouter();
   return (
     <StyledHome>
-      <PageRowItem title="">
-        <Ranking players={players} />
-      </PageRowItem>
       <PageColumn>
-        <PageRowItem title="Add players">
-          <InputForm
-            onClick={addPlayer(router)}
-            buttonLabel="Add player"
-            label="New player? Add yourself to the system"
-            placeholder="Jane Doe"
-          />
+        <PageRowItem title="">
+          <ResultFormItem title="Write results (e.g 2-1 for BO3)">
+            <ResultForm players={players} />
+          </ResultFormItem>
+          <Divider />
+          <AddPlayerItem title="Add players">
+            <InputForm
+              onClick={addPlayer(router)}
+              buttonLabel="Add player"
+              label="New player? Add yourself to the system"
+              placeholder="Jane Doe"
+            />
+          </AddPlayerItem>
         </PageRowItem>
-        <PageRowItem title="Write results (e.g 2-1 for BO3)">
-          <ResultForm players={players} />
+        <PageRowItem title="">
+          <Ranking players={players} />
         </PageRowItem>
       </PageColumn>
     </StyledHome>
