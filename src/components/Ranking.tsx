@@ -37,14 +37,6 @@ const Neon = styled.div<{
   color: ${(props) => props.text_color};
   font-weight: 400;
   letter-spacing: 8px;
-  text-shadow: 
-   // 1px 0px 4px ${(props) => props.text_color}, 
-   // -1px 0px 4px ${(props) => props.text_color}, 
-   // 0px 0px 2px ${(props) => props.text_color},
-   2px 0px 2px ${(props) => props.shadow_color}, -2px 0px 2px ${(props) => props.shadow_color},
-   2px 3px 15px ${(props) => props.shadow_color}, 2px 0px 15px ${(props) => props.shadow_color},
-   5px 0px 80px ${(props) => props.shadow_color}, 10px 0vw 20px ${(props) => props.shadow_color},
-   4px 0vw 200px ${(props) => props.shadow_color};
 `;
 
 export const Ranking: FC<{ players: users[] }> = ({ players }) => {
